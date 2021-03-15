@@ -19,7 +19,7 @@ android {
         minSdkVersion(14)
         targetSdkVersion(29)  //'Q'.toInt()
         versionCode = 168
-        versionName = "0.7.15"
+        versionName = "0.7.15-v"
 
         externalNativeBuild {
             cmake {
