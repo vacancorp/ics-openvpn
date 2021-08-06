@@ -11,5 +11,6 @@
         android:icon="@drawable/ic_receipt"
         app:showAsAction="ifRoom"
         android:title="@string/show_log_window"
-        android:titleCondensed="@string/show_log"/>
+        android:titleCondensed="@string/show_log"
+        />
 </menu>

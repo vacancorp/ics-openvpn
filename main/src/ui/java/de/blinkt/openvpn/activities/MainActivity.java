@@ -22,6 +22,7 @@ import de.blinkt.openvpn.fragments.GraphFragment;
 import de.blinkt.openvpn.fragments.LogFragment;
 import de.blinkt.openvpn.fragments.SendDumpFragment;
 import de.blinkt.openvpn.fragments.VPNProfileList;
+import de.blinkt.openvpn.fragments.VacanActionsFragment;
 import de.blinkt.openvpn.views.ScreenSlidePagerAdapter;
 
 
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity {
 
 
         mPagerAdapter.addTab(R.string.vpn_list_title, VPNProfileList.class);
+        mPagerAdapter.addTab(R.string.vacan_actions, VacanActionsFragment.class);
         mPagerAdapter.addTab(R.string.graph, GraphFragment.class);
 
         mPagerAdapter.addTab(R.string.generalsettings, GeneralSettings.class);
