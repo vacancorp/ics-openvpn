@@ -17,21 +17,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" >
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="12sp" />
+
         <Button
             android:id="@+id/vacanButton1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="hogehogeho"
+            android:text="VACAN専用自動設定"
             />
-
-        <TextView
-            android:id="@+id/version"
-            android:text="hogehogehoge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            tools:ignore="SelectableText" />
-
     </LinearLayout>
 
 </ScrollView>

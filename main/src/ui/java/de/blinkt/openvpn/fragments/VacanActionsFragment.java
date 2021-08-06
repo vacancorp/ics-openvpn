@@ -6,7 +6,9 @@
 package de.blinkt.openvpn.fragments;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,16 +16,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import de.blinkt.openvpn.R;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.activities.ConfigConverter;
 import de.blinkt.openvpn.activities.FileSelect;
+import de.blinkt.openvpn.activities.MainActivity;
 
 public class VacanActionsFragment extends Fragment implements View.OnClickListener {
     private static final int FILE_PICKER_RESULT_KITKAT = 392;
@@ -46,10 +50,9 @@ public class VacanActionsFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.vacan_actions, container, false);
-        TextView ver = (TextView) v.findViewById(R.id.version);
 
-        final Button button = v.findViewById(R.id.vacanButton1);
-        button.setOnClickListener(new Button1Listener(this));
+        final Button button1 = v.findViewById(R.id.vacanButton1);
+        button1.setOnClickListener(new Button1Listener(this));
 
         return v;
     }
@@ -102,7 +105,10 @@ public class VacanActionsFragment extends Fragment implements View.OnClickListen
             Uri uri = new Uri.Builder().path(fileData).scheme("file").build();
 
             startConfigImport(uri);
-        } else if (requestCode == FILE_PICKER_RESULT_KITKAT) {
+        } else if (requestCode == IMPORT_PROFILE) {
+            String profileUUID = data.getStringExtra(VpnProfile.EXTRA_PROFILEUUID);
+            setVacanSetting(profileUUID);
+        }  else if (requestCode == FILE_PICKER_RESULT_KITKAT) {
             if (data != null) {
                 Uri uri = data.getData();
                 startConfigImport(uri);
@@ -117,11 +123,25 @@ public class VacanActionsFragment extends Fragment implements View.OnClickListen
         startActivityForResult(startImport, IMPORT_PROFILE);
     }
 
+    private void setVacanSetting(String profileUUID) {
+        try {
+            Context applicationContext = Objects.requireNonNull(getContext()).getApplicationContext();
+
+            SharedPreferences hoge = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+            SharedPreferences.Editor editor = hoge.edit();
+            editor.putBoolean("restartvpnonboot", true);
+            editor.putString("alwaysOnVpn", profileUUID);
+            editor.apply();
+        } catch (NullPointerException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
+    }
+
     static class Button1Listener implements View.OnClickListener {
         private final WeakReference<VacanActionsFragment> fragmentReference;
 
         public Button1Listener(VacanActionsFragment vacanActionsFragment) {
-            this.fragmentReference = new WeakReference(vacanActionsFragment);
+            this.fragmentReference = new WeakReference<>(vacanActionsFragment);
         }
 
         @Override

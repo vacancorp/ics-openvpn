@@ -6,13 +6,16 @@
 package de.blinkt.openvpn.fragments;
 
 import java.io.File;
+import java.util.Objects;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -25,6 +28,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import de.blinkt.openvpn.BuildConfig;
 import de.blinkt.openvpn.R;
@@ -38,6 +42,7 @@ public class GeneralSettings extends PreferenceFragmentCompat implements Prefere
 
     private ExternalAppDatabase mExtapp;
     private ListPreference mAlwaysOnVPN;
+    private CheckBoxPreference mRestartVpnOnBoot;
 
 
     @Override
@@ -52,6 +57,7 @@ public class GeneralSettings extends PreferenceFragmentCompat implements Prefere
         mAlwaysOnVPN = findPreference("alwaysOnVpn");
         mAlwaysOnVPN.setOnPreferenceChangeListener(this);
 
+        mRestartVpnOnBoot = findPreference("restartvpnonboot");
 
         Preference loadtun = findPreference("loadTunModule");
         if (!isTunModuleAvailable()) {
@@ -110,6 +116,15 @@ public class GeneralSettings extends PreferenceFragmentCompat implements Prefere
             sb.append(getString(R.string.vpnselected, vpn.getName()));
         mAlwaysOnVPN.setSummary(sb.toString());
 
+
+        try {
+            Context applicationContext = Objects.requireNonNull(getContext()).getApplicationContext();
+
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext);
+            mRestartVpnOnBoot.setChecked(sharedPreferences.getBoolean("restartvpnonboot", false));
+        } catch (NullPointerException e) {
+            System.out.println(e.getLocalizedMessage());
+        }
     }
 
     @Override
