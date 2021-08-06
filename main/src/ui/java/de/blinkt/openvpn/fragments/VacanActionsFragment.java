@@ -20,6 +20,8 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
@@ -27,7 +29,6 @@ import de.blinkt.openvpn.R;
 import de.blinkt.openvpn.VpnProfile;
 import de.blinkt.openvpn.activities.ConfigConverter;
 import de.blinkt.openvpn.activities.FileSelect;
-import de.blinkt.openvpn.activities.MainActivity;
 
 public class VacanActionsFragment extends Fragment implements View.OnClickListener {
     private static final int FILE_PICKER_RESULT_KITKAT = 392;
@@ -96,6 +97,22 @@ public class VacanActionsFragment extends Fragment implements View.OnClickListen
         startActivityForResult(intent, SELECT_PROFILE);
     }
 
+    private void vacanImportConfig() {
+        File dir = new File("/data/data/de.blinkt.openvpn/files");
+        String[] list = dir.list(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                System.out.println(name);
+                return name.endsWith(".ovpn");
+            }
+        });
+
+        if (list != null && list.length == 1) {
+            Uri uri = new Uri.Builder().path(dir + "/" + list[0]).scheme("file").build();
+            startConfigImport(uri);
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -148,7 +165,8 @@ public class VacanActionsFragment extends Fragment implements View.OnClickListen
         public void onClick(View v) {
             VacanActionsFragment fragment = this.fragmentReference.get();
             if (fragment != null) {
-                fragment.startImportConfigFilePicker();
+//                fragment.startImportConfigFilePicker();
+                fragment.vacanImportConfig();
             }
         }
     }
